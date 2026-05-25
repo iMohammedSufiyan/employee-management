@@ -1,17 +1,20 @@
 package com.sufiyan.employee_management.service;
 
+import com.sufiyan.employee_management.dto.EmployeeRequestDto;
+import com.sufiyan.employee_management.dto.EmployeeResponseDto;
+import com.sufiyan.employee_management.dto.GenericResponse;
 import com.sufiyan.employee_management.entity.Employee;
 
 import java.util.List;
 
 public interface EmployeeService {
-    Employee saveEmployee(Employee employee);
+    GenericResponse<EmployeeResponseDto> saveEmployee(EmployeeRequestDto employeeRequestDto);
 
-    List<Employee> getAllEmployees();
+    GenericResponse<List<EmployeeResponseDto>> getAllEmployees();
 
-    Employee getEmployeeById(Long employeeId);
+    GenericResponse<EmployeeResponseDto> getEmployeeById(Long employeeId);
 
-    Employee updateEmployee(Long id, Employee employee);
+    GenericResponse<EmployeeResponseDto> updateEmployee(Long id, EmployeeRequestDto employeeRequestDto);
 
-    Boolean deleteEmployee(Long employeeId);
+    GenericResponse<EmployeeResponseDto> deleteEmployee(Long employeeId);
 }
