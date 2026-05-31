@@ -1,5 +1,6 @@
 package com.sufiyan.employee_management.dto;
 
+import com.sufiyan.employee_management.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -19,5 +20,7 @@ public class RegisterRequestDto {
 
     @NotBlank(message = "Password is required")
     String password;
+
+    Role role;
 
 }
