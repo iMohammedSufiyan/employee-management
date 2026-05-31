@@ -8,16 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EmployeeResponseDto {
-    Long id;
-    String name;
-    Integer age;
-    String gender;
-    String department;
-    Double salary;
-    String city;
+public class AuthResponseDto {
+
+    String token;
+    String email;
+    String role;
+
 }
