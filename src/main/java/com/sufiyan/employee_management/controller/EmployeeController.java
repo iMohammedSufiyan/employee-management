@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -43,10 +45,37 @@ public class EmployeeController {
                 .body(employeeService.getAllEmployees());
     }
 
+    @GetMapping("/paginated")
+    public ResponseEntity<GenericResponse<Page<EmployeeResponseDto>>> getAllEmployeesPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(employeeService.getAllEmployeesPaginated(page, size, sortBy, sortDirection));
+    }
+
     @GetMapping("/{employeeId}")
     public ResponseEntity<GenericResponse<EmployeeResponseDto>> getEmployeeById(@PathVariable Long employeeId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(employeeService.getEmployeeById(employeeId));
+    }
+
+    @GetMapping("/search/department")
+    public ResponseEntity<GenericResponse<Page<EmployeeResponseDto>>> searchByDepartment(
+            @RequestParam String department,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(employeeService.searchByDepartment(department, page, size));
+    }
+
+    @GetMapping("/search/city")
+    public ResponseEntity<GenericResponse<List<EmployeeResponseDto>>> searchByCity(@RequestParam String city) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(employeeService.searchByCity(city));
     }
 
     @PutMapping("/{employeeId}")

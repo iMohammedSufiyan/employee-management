@@ -11,6 +11,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,11 +43,57 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public GenericResponse<Page<EmployeeResponseDto>> getAllEmployeesPaginated(int page, int size, String sortBy, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<EmployeeResponseDto> employeePage = employeeRepository
+                .findAll(pageable)
+                .map(this::mapToDto);
+
+        return GenericResponse.success(employeePage);
+    }
+
+    @Override
     public GenericResponse<EmployeeResponseDto> getEmployeeById(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException(employeeId));
 
         return GenericResponse.success(mapToDto(employee));
+    }
+
+    @Override
+    public GenericResponse<Page<EmployeeResponseDto>> searchByDepartment(String department, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EmployeeResponseDto> employeePageByDepartment = employeeRepository
+                .findByDepartmentIgnoreCase(department, pageable)
+                .map(this::mapToDto);
+
+        if (employeePageByDepartment.isEmpty()) {
+            log.warn("No employees found in department: {}", department);
+            return GenericResponse.notFound("No employees found in department: " + department);
+        }
+
+        return GenericResponse.success(employeePageByDepartment);
+    }
+
+    @Override
+    public GenericResponse<List<EmployeeResponseDto>> searchByCity(String city) {
+        List<EmployeeResponseDto> listOfEmployees = employeeRepository
+                .findByCityIgnoreCase(city)
+                .stream()
+                .map(this::mapToDto)
+                .toList();
+
+        if (listOfEmployees.isEmpty()) {
+            log.warn("No employee found in city: {}", city);
+            return GenericResponse.notFound("No employee found in city: " + city);
+        }
+
+        return GenericResponse.success(listOfEmployees);
     }
 
     @Override
