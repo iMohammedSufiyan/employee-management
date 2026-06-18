@@ -18,7 +18,12 @@ A production-grade RESTful API built with Java 17 and Spring Boot 3.x for managi
 - DTO pattern with request/response separation
 - Input validation with meaningful error messages
 - Global exception handling
-- JWT authentication and authorization (in progress)
+- JWT authentication and authorization
+- Role based access control — ADMIN and USER roles
+- Pagination and sorting
+- Search by department and city
+- Consistent error responses — 401, 403, 404, 500
+- Custom authentication entry point and access denied handler
 - Clean REST API design with proper HTTP status codes
 
 ## API Endpoints
@@ -32,6 +37,11 @@ A production-grade RESTful API built with Java 17 and Spring Boot 3.x for managi
 | GET | /api/employee/{id} | Get employee by ID |
 | PUT | /api/employee/{id} | Update employee |
 | DELETE | /api/employee/{id} | Delete employee |
+| GET | /api/employee/paginated | Get paginated employees |
+| GET | /api/employee/search/department | Search by department |
+| GET | /api/employee/search/city | Search by city |
+| POST | /api/auth/register | Register new user |
+| POST | /api/auth/login | Login and get JWT token |
 
 ## Getting Started
 
