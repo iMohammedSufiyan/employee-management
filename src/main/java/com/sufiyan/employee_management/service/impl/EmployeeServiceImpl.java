@@ -115,14 +115,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public GenericResponse<EmployeeResponseDto> deleteEmployee(Long employeeId) {
-        try {
-            GenericResponse<EmployeeResponseDto> employeeResponseDto = getEmployeeById(employeeId); // throws exception if not found
-            employeeRepository.deleteById(employeeId);
-            return employeeResponseDto;
-        } catch (Exception e) {
-            log.error("Error while deleting Employee with ID: {} | Error: {}", employeeId, e.getMessage());
-            return GenericResponse.notFound("Cannot delete Employee with ID: " + employeeId + "because " + e.getCause().getMessage());
-        }
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException(employeeId));
+
+        employeeRepository.deleteById(employeeId);
+        log.info("Employee deleted with ID: {}", employeeId);
+        return GenericResponse.success("Employee deleted successfully", mapToDto(employee));
     }
 
     private Employee mapToEntity(EmployeeRequestDto employeeRequestDto) {
